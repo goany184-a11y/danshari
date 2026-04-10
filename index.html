@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Danshari Poster Game</title>
+  <style>
+    :root {
+      --bg: #f4f1e8;
+      --ink: #111111;
+      --accent: #7de2b0;
+      --accent-dark: #2e9e72;
+      --line: #111111;
+      --muted: #5f5a52;
+      --panel: #fffdf7;
+      --danger: #ded8cc;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      letter-spacing: 0.02em;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .poster {
+      width: min(100%, 460px);
+      background: var(--panel);
+      border: 3px solid var(--line);
+      padding: 22px;
+      box-shadow: 10px 10px 0 var(--line);
+      display: grid;
+      gap: 18px;
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 12px;
+    }
+
+    .tag {
+      display: inline-block;
+      border: 2px solid var(--line);
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      background: white;
+    }
+
+    .big-score {
+      font-size: 64px;
+      line-height: 0.9;
+      font-weight: 900;
+    }
+
+    .sub {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .mission-box {
+      border: 3px solid var(--line);
+      min-height: 220px;
+      padding: 18px;
+      display: grid;
+      align-content: space-between;
+      background:
+        linear-gradient(135deg, rgba(125, 226, 176, 0.28), rgba(125, 226, 176, 0) 55%),
+        white;
+    }
+
+    .mission-label {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .mission-text {
+      font-size: clamp(28px, 7vw, 42px);
+      line-height: 1.02;
+      font-weight: 900;
+      word-break: break-word;
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: end;
+      font-size: 13px;
+    }
+
+    .controls {
+      display: grid;
+      gap: 10px;
+    }
+
+    button {
+      width: 100%;
+      border: 3px solid var(--line);
+      background: white;
+      color: var(--ink);
+      padding: 16px 18px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.12s ease, background 0.12s ease;
+    }
+
+    button:hover {
+      transform: translate(-2px, -2px);
+    }
+
+    button:active {
+      transform: translate(0, 0);
+    }
+
+    .primary {
+      background: var(--accent);
+    }
+
+    .secondary {
+      background: var(--danger);
+      font-size: 14px;
+      padding: 12px 14px;
+    }
+
+    .flash {
+      display: none;
+      border: 3px solid var(--line);
+      padding: 14px 16px;
+      background: var(--accent);
+      font-weight: 900;
+      font-size: 24px;
+      text-align: center;
+    }
+
+    .flash.show {
+      display: block;
+      animation: pop 0.45s ease;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.94); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .leaderboard {
+      border: 3px solid var(--line);
+      padding: 14px;
+      background: white;
+      display: grid;
+      gap: 10px;
+    }
+
+    .leaderboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .leaderboard-title {
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .rank-item {
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      border-top: 2px solid var(--line);
+      padding-top: 10px;
+      font-weight: 700;
+    }
+
+    .rank-item:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .rank-no {
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .rank-name.you {
+      background: var(--accent);
+      display: inline-block;
+      padding: 3px 8px;
+    }
+
+    .footer-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .tiny {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    @media (max-width: 420px) {
+      .poster {
+        padding: 16px;
+      }
+
+      .big-score {
+        font-size: 52px;
+      }
+
+      .footer-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <main class="poster">
+      <div class="topline">
+        <div>
+          <div class="tag">DANSHARI POSTER GAME</div>
+          <div class="sub" id="dayLabel">DAY 1</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="big-score" id="scoreValue">0</div>
+          <div class="sub">POINTS</div>
+        </div>
+      </div>
+
+      <section class="mission-box">
+        <div>
+          <div class="mission-label">today's card</div>
+        </div>
+        <div class="mission-text" id="missionText">服を1つ見直す</div>
+        <div class="meta-row">
+          <div>
+            <div class="sub">streak</div>
+            <div id="streakValue" style="font-size:24px;font-weight:900;">0</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="sub">status</div>
+            <div id="statusValue" style="font-size:16px;font-weight:900;">READY</div>
+          </div>
+        </div>
+      </section>
+
+      <div class="flash" id="flashMessage">+1 POINT</div>
+
+      <section class="controls">
+        <button class="primary" id="doneButton">捨てた！ +1pt</button>
+        <button class="secondary" id="skipButton">今日は無理 → 次のカード</button>
+      </section>
+
+      <section class="leaderboard">
+        <div class="leaderboard-header">
+          <div class="leaderboard-title">ranking</div>
+          <div class="sub">today</div>
+        </div>
+        <div id="leaderboardList"></div>
+      </section>
+
+      <div class="footer-actions">
+        <button id="newCardButton">新しいカードを引く</button>
+        <button id="resetButton">リセット</button>
+      </div>
+
+      <div class="tiny">
+        GitHub Pages にそのまま置ける1ファイル版です。ランキングはまずローカル表示です。みんなで共有する版にしたい場合は、あとで Supabase などを追加します。
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const CARDS = [
+      "服を1つ見直す",
+      "本を1冊手放す",
+      "紙類を1つ捨てる",
+      "紙袋を1つ手放す",
+      "ケーブルを1本見直す",
+      "文房具を1つ減らす",
+      "コスメを1つ見直す",
+      "キッチン用品を1つ手放す",
+      "なんとなく残している物を1つ減らす",
+      "引き出しの中から1つ手放す",
+      "バッグの中から不要な物を1つ出す",
+      "小物を1つ減らす",
+      "レシートや紙を1つ捨てる",
+      "机の上の物を1つ減らす",
+      "使っていないものを1つ見直す"
+    ];
+
+    const STORAGE_KEY = "danshari-poster-game-v1";
+
+    const DEFAULT_STATE = {
+      score: 0,
+      streak: 0,
+      day: 1,
+      mission: CARDS[0],
+      doneToday: false
+    };
+
+    function loadState() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return { ...DEFAULT_STATE, mission: randomCard() };
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return { ...DEFAULT_STATE, mission: randomCard() };
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function randomCard() {
+      return CARDS[Math.floor(Math.random() * CARDS.length)];
+    }
+
+    function getLeaderboard() {
+      return [
+        { name: "Mika", score: 8 },
+        { name: "Sora", score: 6 },
+        { name: "Ren", score: 4 },
+        { name: "YOU", score: state.score }
+      ]
+      .sort((a, b) => b.score - a.score)
+      .map((item, index) => ({ ...item, rank: index + 1 }));
+    }
+
+    const scoreValue = document.getElementById("scoreValue");
+    const missionText = document.getElementById("missionText");
+    const streakValue = document.getElementById("streakValue");
+    const dayLabel = document.getElementById("dayLabel");
+    const statusValue = document.getElementById("statusValue");
+    const leaderboardList = document.getElementById("leaderboardList");
+    const flashMessage = document.getElementById("flashMessage");
+    const doneButton = document.getElementById("doneButton");
+    const skipButton = document.getElementById("skipButton");
+    const newCardButton = document.getElementById("newCardButton");
+    const resetButton = document.getElementById("resetButton");
+
+    let state = loadState();
+
+    function render() {
+      scoreValue.textContent = state.score;
+      missionText.textContent = state.mission;
+      streakValue.textContent = state.streak;
+      dayLabel.textContent = `DAY ${state.day}`;
+      statusValue.textContent = state.doneToday ? "DONE" : "READY";
+      doneButton.disabled = state.doneToday;
+      doneButton.style.opacity = state.doneToday ? 0.45 : 1;
+      doneButton.style.cursor = state.doneToday ? "default" : "pointer";
+
+      const ranking = getLeaderboard();
+      leaderboardList.innerHTML = ranking.map(item => `
+        <div class="rank-item">
+          <div class="rank-no">${item.rank}</div>
+          <div class="rank-name ${item.name === "YOU" ? "you" : ""}">${item.name}</div>
+          <div>${item.score}pt</div>
+        </div>
+      `).join("");
+    }
+
+    function flash(text) {
+      flashMessage.textContent = text;
+      flashMessage.classList.add("show");
+      setTimeout(() => {
+        flashMessage.classList.remove("show");
+      }, 800);
+    }
+
+    doneButton.addEventListener("click", () => {
+      if (state.doneToday) return;
+      state.score += 1;
+      state.streak += 1;
+      state.doneToday = true;
+      saveState();
+      render();
+      flash("+1 POINT");
+    });
+
+    skipButton.addEventListener("click", () => {
+      state.mission = randomCard();
+      state.streak = 0;
+      state.doneToday = false;
+      state.day += 1;
+      saveState();
+      render();
+      flash("NEXT CARD");
+    });
+
+    newCardButton.addEventListener("click", () => {
+      state.mission = randomCard();
+      state.doneToday = false;
+      state.day += 1;
+      saveState();
+      render();
+    });
+
+    resetButton.addEventListener("click", () => {
+      state = { ...DEFAULT_STATE, mission: randomCard() };
+      saveState();
+      render();
+      flash("RESET");
+    });
+
+    render();
+  </script>
+</body>
+</html>
