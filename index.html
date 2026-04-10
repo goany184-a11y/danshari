@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Danshari Poster Game</title>
+  <title>Danshari Shared Poster Game</title>
   <style>
     :root {
       --bg: #f4f1e8;
@@ -14,12 +14,9 @@
       --muted: #5f5a52;
       --panel: #fffdf7;
       --danger: #ded8cc;
+      --white: #ffffff;
     }
-
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
@@ -28,16 +25,14 @@
       min-height: 100vh;
       letter-spacing: 0.02em;
     }
-
     .app {
       min-height: 100vh;
       display: grid;
       place-items: center;
       padding: 24px;
     }
-
     .poster {
-      width: min(100%, 460px);
+      width: min(100%, 520px);
       background: var(--panel);
       border: 3px solid var(--line);
       padding: 22px;
@@ -45,14 +40,12 @@
       display: grid;
       gap: 18px;
     }
-
-    .topline {
+    .topline, .leaderboard-header, .name-row, .status-row {
       display: flex;
       justify-content: space-between;
       align-items: start;
       gap: 12px;
     }
-
     .tag {
       display: inline-block;
       border: 2px solid var(--line);
@@ -61,44 +54,41 @@
       font-weight: 700;
       background: white;
     }
-
     .big-score {
       font-size: 64px;
       line-height: 0.9;
       font-weight: 900;
     }
-
     .sub {
       font-size: 12px;
       color: var(--muted);
       text-transform: uppercase;
     }
-
-    .mission-box {
+    .mission-box, .leaderboard, .name-box, .info-box {
       border: 3px solid var(--line);
+      background: white;
+      padding: 16px;
+    }
+    .mission-box {
       min-height: 220px;
-      padding: 18px;
       display: grid;
       align-content: space-between;
       background:
         linear-gradient(135deg, rgba(125, 226, 176, 0.28), rgba(125, 226, 176, 0) 55%),
         white;
     }
-
-    .mission-label {
+    .mission-label, .leaderboard-title {
       font-size: 12px;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.12em;
     }
-
     .mission-text {
       font-size: clamp(28px, 7vw, 42px);
       line-height: 1.02;
       font-weight: 900;
       word-break: break-word;
     }
-
     .meta-row {
       display: flex;
       justify-content: space-between;
@@ -106,13 +96,11 @@
       align-items: end;
       font-size: 13px;
     }
-
-    .controls {
+    .controls, .name-form {
       display: grid;
       gap: 10px;
     }
-
-    button {
+    button, input {
       width: 100%;
       border: 3px solid var(--line);
       background: white;
@@ -120,28 +108,28 @@
       padding: 16px 18px;
       font-size: 18px;
       font-weight: 800;
+    }
+    input {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    button {
       cursor: pointer;
       transition: transform 0.12s ease, background 0.12s ease;
     }
-
-    button:hover {
-      transform: translate(-2px, -2px);
+    button:hover { transform: translate(-2px, -2px); }
+    button:active { transform: translate(0, 0); }
+    button:disabled {
+      opacity: 0.5;
+      cursor: default;
+      transform: none;
     }
-
-    button:active {
-      transform: translate(0, 0);
-    }
-
-    .primary {
-      background: var(--accent);
-    }
-
+    .primary { background: var(--accent); }
     .secondary {
       background: var(--danger);
       font-size: 14px;
       padding: 12px 14px;
     }
-
     .flash {
       display: none;
       border: 3px solid var(--line);
@@ -151,38 +139,15 @@
       font-size: 24px;
       text-align: center;
     }
-
     .flash.show {
       display: block;
       animation: pop 0.45s ease;
     }
-
     @keyframes pop {
       0% { transform: scale(0.94); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
     }
-
-    .leaderboard {
-      border: 3px solid var(--line);
-      padding: 14px;
-      background: white;
-      display: grid;
-      gap: 10px;
-    }
-
-    .leaderboard-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .leaderboard-title {
-      font-size: 14px;
-      font-weight: 800;
-      text-transform: uppercase;
-    }
-
+    .leaderboard { display: grid; gap: 10px; }
     .rank-item {
       display: grid;
       grid-template-columns: 42px 1fr auto;
@@ -192,47 +157,41 @@
       padding-top: 10px;
       font-weight: 700;
     }
-
-    .rank-item:first-of-type {
-      border-top: 0;
-      padding-top: 0;
-    }
-
-    .rank-no {
-      font-size: 24px;
-      font-weight: 900;
-    }
-
+    .rank-item:first-of-type { border-top: 0; padding-top: 0; }
+    .rank-no { font-size: 24px; font-weight: 900; }
     .rank-name.you {
       background: var(--accent);
       display: inline-block;
       padding: 3px 8px;
     }
-
     .footer-actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
-
     .tiny {
       font-size: 11px;
       color: var(--muted);
-      line-height: 1.4;
+      line-height: 1.5;
     }
-
+    .hidden { display: none !important; }
+    .pill {
+      display: inline-block;
+      border: 2px solid var(--line);
+      padding: 4px 8px;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--white);
+    }
+    .error {
+      color: #b42318;
+      font-size: 13px;
+      font-weight: 700;
+    }
     @media (max-width: 420px) {
-      .poster {
-        padding: 16px;
-      }
-
-      .big-score {
-        font-size: 52px;
-      }
-
-      .footer-actions {
-        grid-template-columns: 1fr;
-      }
+      .poster { padding: 16px; }
+      .big-score { font-size: 52px; }
+      .footer-actions { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -241,7 +200,7 @@
     <main class="poster">
       <div class="topline">
         <div>
-          <div class="tag">DANSHARI POSTER GAME</div>
+          <div class="tag">DANSHARI SHARED GAME</div>
           <div class="sub" id="dayLabel">DAY 1</div>
         </div>
         <div style="text-align:right;">
@@ -249,6 +208,35 @@
           <div class="sub">POINTS</div>
         </div>
       </div>
+
+      <section class="name-box" id="nameBox">
+        <div class="name-row">
+          <div>
+            <div class="leaderboard-title">join</div>
+            <div style="margin-top:6px;font-weight:900;font-size:22px;">名前を登録</div>
+          </div>
+          <div class="pill">shared</div>
+        </div>
+        <form class="name-form" id="nameForm" style="margin-top:14px;">
+          <input id="nameInput" type="text" maxlength="20" placeholder="例：なお" required />
+          <button type="submit" class="primary">この名前で参加</button>
+        </form>
+        <div class="tiny" style="margin-top:10px;">同じ名前があるときは自動で別IDになります。</div>
+        <div class="error hidden" id="nameError"></div>
+      </section>
+
+      <section class="info-box hidden" id="playerInfoBox">
+        <div class="status-row">
+          <div>
+            <div class="sub">player</div>
+            <div id="playerName" style="font-size:24px;font-weight:900;">YOU</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="sub">shared ranking</div>
+            <div id="playerRank" style="font-size:24px;font-weight:900;">#-</div>
+          </div>
+        </div>
+      </section>
 
       <section class="mission-box">
         <div>
@@ -270,165 +258,303 @@
       <div class="flash" id="flashMessage">+1 POINT</div>
 
       <section class="controls">
-        <button class="primary" id="doneButton">捨てた！ +1pt</button>
-        <button class="secondary" id="skipButton">今日は無理 → 次のカード</button>
+        <button class="primary" id="doneButton" disabled>捨てた！ +1pt</button>
+        <button class="secondary" id="skipButton" disabled>今日は無理 → 次のカード</button>
       </section>
 
       <section class="leaderboard">
         <div class="leaderboard-header">
           <div class="leaderboard-title">ranking</div>
-          <div class="sub">today</div>
+          <button id="refreshButton" style="width:auto;padding:8px 12px;font-size:12px;">更新</button>
         </div>
         <div id="leaderboardList"></div>
       </section>
 
       <div class="footer-actions">
-        <button id="newCardButton">新しいカードを引く</button>
-        <button id="resetButton">リセット</button>
+        <button id="newCardButton" disabled>新しいカードを引く</button>
+        <button id="resetLocalButton">この端末の設定だけリセット</button>
       </div>
 
       <div class="tiny">
-        GitHub Pages にそのまま置ける1ファイル版です。ランキングはまずローカル表示です。みんなで共有する版にしたい場合は、あとで Supabase などを追加します。
+        GitHub Pages のまま使えます。共有ランキングには Supabase が必要です。下の script の SUPABASE_URL / SUPABASE_ANON_KEY を自分のものに入れてください。<br>
+        必要テーブルは <strong>players</strong> です。
       </div>
     </main>
   </div>
 
-  <script>
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
     const CARDS = [
-      "服を1つ見直す",
-      "本を1冊手放す",
-      "紙類を1つ捨てる",
-      "紙袋を1つ手放す",
-      "ケーブルを1本見直す",
-      "文房具を1つ減らす",
-      "コスメを1つ見直す",
-      "キッチン用品を1つ手放す",
-      "なんとなく残している物を1つ減らす",
-      "引き出しの中から1つ手放す",
-      "バッグの中から不要な物を1つ出す",
-      "小物を1つ減らす",
-      "レシートや紙を1つ捨てる",
-      "机の上の物を1つ減らす",
-      "使っていないものを1つ見直す"
+      '服を1つ見直す',
+      '本を1冊手放す',
+      '紙類を1つ捨てる',
+      '紙袋を1つ手放す',
+      'ケーブルを1本見直す',
+      '文房具を1つ減らす',
+      'コスメを1つ見直す',
+      'キッチン用品を1つ手放す',
+      'なんとなく残している物を1つ減らす',
+      '引き出しの中から1つ手放す',
+      'バッグの中から不要な物を1つ出す',
+      '小物を1つ減らす',
+      'レシートや紙を1つ捨てる',
+      '机の上の物を1つ減らす',
+      '使っていないものを1つ見直す'
     ];
 
-    const STORAGE_KEY = "danshari-poster-game-v1";
-
-    const DEFAULT_STATE = {
-      score: 0,
-      streak: 0,
+    const LOCAL_KEY = 'danshari-shared-player-v1';
+    const defaultLocalState = {
+      playerId: null,
+      playerName: '',
       day: 1,
-      mission: CARDS[0],
-      doneToday: false
+      mission: randomCard(),
+      doneToday: false,
+      streak: 0,
+      score: 0,
     };
 
-    function loadState() {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return { ...DEFAULT_STATE, mission: randomCard() };
-      try {
-        return JSON.parse(raw);
-      } catch {
-        return { ...DEFAULT_STATE, mission: randomCard() };
+    const scoreValue = document.getElementById('scoreValue');
+    const missionText = document.getElementById('missionText');
+    const streakValue = document.getElementById('streakValue');
+    const dayLabel = document.getElementById('dayLabel');
+    const statusValue = document.getElementById('statusValue');
+    const leaderboardList = document.getElementById('leaderboardList');
+    const flashMessage = document.getElementById('flashMessage');
+    const doneButton = document.getElementById('doneButton');
+    const skipButton = document.getElementById('skipButton');
+    const newCardButton = document.getElementById('newCardButton');
+    const refreshButton = document.getElementById('refreshButton');
+    const resetLocalButton = document.getElementById('resetLocalButton');
+    const nameBox = document.getElementById('nameBox');
+    const playerInfoBox = document.getElementById('playerInfoBox');
+    const playerName = document.getElementById('playerName');
+    const playerRank = document.getElementById('playerRank');
+    const nameForm = document.getElementById('nameForm');
+    const nameInput = document.getElementById('nameInput');
+    const nameError = document.getElementById('nameError');
+
+    let state = loadLocalState();
+    let supabase = null;
+
+    init();
+
+    async function init() {
+      if (!SUPABASE_URL.startsWith('http') || SUPABASE_ANON_KEY.includes('YOUR_')) {
+        renderConfigError();
+        render();
+        return;
       }
+
+      supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      await restorePlayerFromDatabase();
+      attachEvents();
+      await render();
     }
 
-    function saveState() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    function attachEvents() {
+      nameForm.addEventListener('submit', handleRegister);
+      doneButton.addEventListener('click', handleDone);
+      skipButton.addEventListener('click', handleSkip);
+      newCardButton.addEventListener('click', handleNewCard);
+      refreshButton.addEventListener('click', render);
+      resetLocalButton.addEventListener('click', resetLocal);
     }
 
     function randomCard() {
       return CARDS[Math.floor(Math.random() * CARDS.length)];
     }
 
-    function getLeaderboard() {
-      return [
-        { name: "Mika", score: 8 },
-        { name: "Sora", score: 6 },
-        { name: "Ren", score: 4 },
-        { name: "YOU", score: state.score }
-      ]
-      .sort((a, b) => b.score - a.score)
-      .map((item, index) => ({ ...item, rank: index + 1 }));
+    function loadLocalState() {
+      const raw = localStorage.getItem(LOCAL_KEY);
+      if (!raw) return { ...defaultLocalState };
+      try {
+        const parsed = JSON.parse(raw);
+        return { ...defaultLocalState, ...parsed };
+      } catch {
+        return { ...defaultLocalState };
+      }
     }
 
-    const scoreValue = document.getElementById("scoreValue");
-    const missionText = document.getElementById("missionText");
-    const streakValue = document.getElementById("streakValue");
-    const dayLabel = document.getElementById("dayLabel");
-    const statusValue = document.getElementById("statusValue");
-    const leaderboardList = document.getElementById("leaderboardList");
-    const flashMessage = document.getElementById("flashMessage");
-    const doneButton = document.getElementById("doneButton");
-    const skipButton = document.getElementById("skipButton");
-    const newCardButton = document.getElementById("newCardButton");
-    const resetButton = document.getElementById("resetButton");
-
-    let state = loadState();
-
-    function render() {
-      scoreValue.textContent = state.score;
-      missionText.textContent = state.mission;
-      streakValue.textContent = state.streak;
-      dayLabel.textContent = `DAY ${state.day}`;
-      statusValue.textContent = state.doneToday ? "DONE" : "READY";
-      doneButton.disabled = state.doneToday;
-      doneButton.style.opacity = state.doneToday ? 0.45 : 1;
-      doneButton.style.cursor = state.doneToday ? "default" : "pointer";
-
-      const ranking = getLeaderboard();
-      leaderboardList.innerHTML = ranking.map(item => `
-        <div class="rank-item">
-          <div class="rank-no">${item.rank}</div>
-          <div class="rank-name ${item.name === "YOU" ? "you" : ""}">${item.name}</div>
-          <div>${item.score}pt</div>
-        </div>
-      `).join("");
+    function saveLocalState() {
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(state));
     }
 
-    function flash(text) {
-      flashMessage.textContent = text;
-      flashMessage.classList.add("show");
-      setTimeout(() => {
-        flashMessage.classList.remove("show");
-      }, 800);
+    function renderConfigError() {
+      nameError.textContent = 'まず index.html の SUPABASE_URL と SUPABASE_ANON_KEY を自分の値に入れてください。';
+      nameError.classList.remove('hidden');
     }
 
-    doneButton.addEventListener("click", () => {
-      if (state.doneToday) return;
+    async function restorePlayerFromDatabase() {
+      if (!state.playerId || !supabase) return;
+      const { data, error } = await supabase
+        .from('players')
+        .select('*')
+        .eq('id', state.playerId)
+        .maybeSingle();
+
+      if (error || !data) return;
+      state.playerName = data.name;
+      state.score = data.score ?? 0;
+      state.streak = data.streak ?? 0;
+      saveLocalState();
+    }
+
+    async function handleRegister(event) {
+      event.preventDefault();
+      nameError.classList.add('hidden');
+      const rawName = nameInput.value.trim();
+      if (!rawName) return;
+      if (!supabase) {
+        renderConfigError();
+        return;
+      }
+
+      const finalName = `${rawName}-${Math.floor(Math.random() * 900 + 100)}`;
+      const { data, error } = await supabase
+        .from('players')
+        .insert([{ name: finalName, score: 0, streak: 0 }])
+        .select()
+        .single();
+
+      if (error) {
+        nameError.textContent = '登録できませんでした。Supabase の設定やテーブルを確認してください。';
+        nameError.classList.remove('hidden');
+        return;
+      }
+
+      state.playerId = data.id;
+      state.playerName = data.name;
+      state.score = data.score ?? 0;
+      state.streak = data.streak ?? 0;
+      saveLocalState();
+      nameInput.value = '';
+      await render();
+      flash('JOINED');
+    }
+
+    async function handleDone() {
+      if (!state.playerId || state.doneToday || !supabase) return;
       state.score += 1;
       state.streak += 1;
       state.doneToday = true;
-      saveState();
-      render();
-      flash("+1 POINT");
-    });
+      saveLocalState();
 
-    skipButton.addEventListener("click", () => {
+      const { error } = await supabase
+        .from('players')
+        .update({ score: state.score, streak: state.streak })
+        .eq('id', state.playerId);
+
+      if (error) {
+        flash('SAVE ERROR');
+        return;
+      }
+
+      await render();
+      flash('+1 POINT');
+    }
+
+    async function handleSkip() {
       state.mission = randomCard();
       state.streak = 0;
       state.doneToday = false;
       state.day += 1;
-      saveState();
-      render();
-      flash("NEXT CARD");
-    });
+      saveLocalState();
 
-    newCardButton.addEventListener("click", () => {
+      if (state.playerId && supabase) {
+        await supabase
+          .from('players')
+          .update({ streak: state.streak })
+          .eq('id', state.playerId);
+      }
+
+      await render();
+      flash('NEXT CARD');
+    }
+
+    async function handleNewCard() {
       state.mission = randomCard();
       state.doneToday = false;
       state.day += 1;
-      saveState();
-      render();
-    });
+      saveLocalState();
+      await render();
+    }
 
-    resetButton.addEventListener("click", () => {
-      state = { ...DEFAULT_STATE, mission: randomCard() };
-      saveState();
+    function resetLocal() {
+      localStorage.removeItem(LOCAL_KEY);
+      state = { ...defaultLocalState, mission: randomCard() };
+      nameError.classList.add('hidden');
       render();
-      flash("RESET");
-    });
+      flash('RESET');
+    }
 
-    render();
+    async function fetchRanking() {
+      if (!supabase) return [];
+      const { data, error } = await supabase
+        .from('players')
+        .select('id, name, score, streak')
+        .order('score', { ascending: false })
+        .limit(20);
+
+      if (error) return [];
+      return data ?? [];
+    }
+
+    async function render() {
+      scoreValue.textContent = state.score;
+      missionText.textContent = state.mission;
+      streakValue.textContent = state.streak;
+      dayLabel.textContent = `DAY ${state.day}`;
+      statusValue.textContent = state.doneToday ? 'DONE' : 'READY';
+
+      const joined = Boolean(state.playerId);
+      doneButton.disabled = !joined || state.doneToday || !supabase;
+      skipButton.disabled = !joined || !supabase;
+      newCardButton.disabled = !joined || !supabase;
+
+      nameBox.classList.toggle('hidden', joined);
+      playerInfoBox.classList.toggle('hidden', !joined);
+      playerName.textContent = state.playerName || 'YOU';
+
+      const ranking = await fetchRanking();
+      if (ranking.length === 0) {
+        leaderboardList.innerHTML = '<div class="tiny">まだランキングがありません。Supabase接続後に参加すると表示されます。</div>';
+        playerRank.textContent = '#-';
+        return;
+      }
+
+      const decorated = ranking.map((item, index) => ({ ...item, rank: index + 1 }));
+      const myRank = decorated.find((item) => item.id === state.playerId);
+      playerRank.textContent = myRank ? `#${myRank.rank}` : '#-';
+
+      leaderboardList.innerHTML = decorated.map(item => `
+        <div class="rank-item">
+          <div class="rank-no">${item.rank}</div>
+          <div class="rank-name ${item.id === state.playerId ? 'you' : ''}">${escapeHtml(item.name)}</div>
+          <div>${item.score}pt</div>
+        </div>
+      `).join('');
+    }
+
+    function flash(text) {
+      flashMessage.textContent = text;
+      flashMessage.classList.add('show');
+      setTimeout(() => {
+        flashMessage.classList.remove('show');
+      }, 800);
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
   </script>
 </body>
 </html>
